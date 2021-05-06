@@ -15,11 +15,14 @@ const OnboardingScreen = ({navigation}) => {
 
     return (
         <Onboarding
+            onSkip={() => navigation.replace("Login")}
+            onDone={() => navigation.replace("Login")}
             pages={[
                 {
                 backgroundColor: '#fff',
                 image: <Image style={styles.image} source={{ uri: "https://i.imgur.com/NpNyk4H.png" }} />,
                 title: 'Garage',
+                subtitle: undefined,
                 titleStyles: {
                     fontSize: 64,
                     fontWeight:'bold',
