@@ -4,19 +4,29 @@ import FormButton from '../components/FormButton';
 import FormInput from '../components/FormInput';
 import SocialButton from '../components/SocialButton';
 
-
-const LoginScreen = ({navigation}) => {
+const SignUpScreen = ({navigation}) => {
+    const [name, setName ] = useState();
+    const [ phoneNo, setPhoneNo ] = useState();
     const [email, setEmail] = useState();
     const [password, setPassword] = useState();
+    const [confirmPassword, setConfirmPassword] = useState();
+
     return (
         <View style={styles.container}>
-            <Image 
-                style={styles.image}
-                source={{
-                    uri: "https://i.imgur.com/Ccv4BDp.png"
-                }}
-            />
             <View>
+                <FormInput
+                    labelValue={name}
+                    onChangeText={(userName) => setName(userName)}
+                    placeholderText={"Name"}
+                    placeholderTextColor="black"
+                />
+                <FormInput
+                    labelValue={phoneNo}
+                    onChangeText={(userContact) => setPhoneNo(userContact)}
+                    placeholderText={"Mobile Number"}
+                    placeholderTextColor="black"
+                    keyboardType="number-pad"
+                />
                 <FormInput
                     labelValue={email}
                     onChangeText={(userEmail) => setEmail(userEmail)}
@@ -33,14 +43,16 @@ const LoginScreen = ({navigation}) => {
                     placeholderTextColor="black"
                     secureTextEntry={true}
                 />
-
-                <TouchableOpacity style={styles.ForgotPassword}>
-                    <Text>Forgot Password?</Text>
-                </TouchableOpacity>
-                
+                <FormInput
+                    labelValue={confirmPassword}
+                    onChangeText={(userConfirmPassword) => setConfirmPassword(userConfirmPassword)}
+                    placeholderText={"Confirm Password"}
+                    placeholderTextColor="black"
+                    secureTextEntry={true}
+                />
             </View>
             <View style={styles.SignIn}>
-                <FormButton buttonTitle={"Sign In"} />
+                <FormButton buttonTitle={"Sign Up"} />
                 <SocialButton 
                     buttonTitle="Sign in with Google"
                     btnType="google"
@@ -50,18 +62,18 @@ const LoginScreen = ({navigation}) => {
                 />
             </View>
             <View style={styles.SignUp}>
-                <Text style={{fontSize:16}}>Don't have an account?</Text>
+                <Text style={{fontSize:16}}>Already Have an account?</Text>
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('SignUp')}
+                    onPress={() => navigation.navigate('Login')}
                 >
-                    <Text style={styles.SignUpText}>Sign Up</Text>
+                    <Text style={styles.SignUpText}>Sign In</Text>
                 </TouchableOpacity>
             </View>
         </View>
     );
 };
 
-export default LoginScreen;
+export default SignUpScreen;
 
 const styles = StyleSheet.create({
     container: {
