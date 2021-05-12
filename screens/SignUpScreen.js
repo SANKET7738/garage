@@ -1,67 +1,98 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import FormButton from '../components/FormButton';
 import FormInput from '../components/FormInput';
 import SocialButton from '../components/SocialButton';
+import { Formik } from 'formik';
 
 const SignUpScreen = ({navigation}) => {
-    const [name, setName ] = useState();
-    const [ phoneNo, setPhoneNo ] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [confirmPassword, setConfirmPassword] = useState();
+    const [ userData, setUserData ] = useState([])
+
+    const addUserData = (userData) => {
+        setUserData(userData)
+        console.log(userData)
+    }
+
+    if(userData.name) {
+        console.log('1')
+        console.log(userData.name);
+    }
 
     return (
         <View style={styles.container}>
             <View>
-                <FormInput
-                    labelValue={name}
-                    onChangeText={(userName) => setName(userName)}
-                    placeholderText={"Name"}
-                    placeholderTextColor="black"
-                />
-                <FormInput
-                    labelValue={phoneNo}
-                    onChangeText={(userContact) => setPhoneNo(userContact)}
-                    placeholderText={"Mobile Number"}
-                    placeholderTextColor="black"
-                    keyboardType="number-pad"
-                />
-                <FormInput
-                    labelValue={email}
-                    onChangeText={(userEmail) => setEmail(userEmail)}
-                    placeholderText={"Email"}
-                    placeholderTextColor="black"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                />
-                <FormInput
-                    labelValue={password}
-                    onChangeText={(userPassword) => setPassword(userPassword)}
-                    placeholderText={"Password"}
-                    placeholderTextColor="black"
-                    secureTextEntry={true}
-                />
-                <FormInput
-                    labelValue={confirmPassword}
-                    onChangeText={(userConfirmPassword) => setConfirmPassword(userConfirmPassword)}
-                    placeholderText={"Confirm Password"}
-                    placeholderTextColor="black"
-                    secureTextEntry={true}
-                />
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss()}>
+                    <Formik
+                        initialValues={{ 
+                            name: '', 
+                            phoneNo: '',
+                            email: '',
+                            password: '',
+                            confirmPassword: '',
+            
+                        }}
+                        onSubmit={(values, actions) => {
+                            addUserData(values);
+                            actions.resetForm();
+                        }}
+                    >
+                        {(formikProps) => (
+                            <View>
+                                <FormInput
+                                    labelValue={formikProps.values.name}
+                                    onChangeText={formikProps.handleChange('name')}
+                                    placeholderText={"Name"}
+                                    placeholderTextColor="black"
+                                />
+                                <FormInput
+                                    labelValue={formikProps.values.phoneNo}
+                                    onChangeText={formikProps.handleChange('phoneNo')}
+                                    placeholderText={"Mobile Number"}
+                                    placeholderTextColor="black"
+                                    keyboardType="number-pad"
+                                />
+                                <FormInput
+                                    labelValue={formikProps.values.email}
+                                    onChangeText={formikProps.handleChange('email')}
+                                    placeholderText={"Email"}
+                                    placeholderTextColor="black"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                />
+                                <FormInput
+                                    labelValue={formikProps.values.password}
+                                    onChangeText={formikProps.handleChange('password')}
+                                    placeholderText={"Password"}
+                                    placeholderTextColor="black"
+                                    secureTextEntry={true}
+                                />
+                                <FormInput
+                                    labelValue={formikProps.values.confirmPassword}
+                                    onChangeText={formikProps.handleChange('confirmPassword')}
+                                    placeholderText={"Confirm Password"}
+                                    placeholderTextColor="black"
+                                    secureTextEntry={true}
+                                />
+                                <View style={styles.SignUp}>
+                                    <FormButton
+                                        onPress={formikProps.handleSubmit}
+                                        buttonTitle={"Sign Up"} 
+                                    />
+                                    <SocialButton 
+                                        buttonTitle="Sign in with Google"
+                                        btnType="google"
+                                        color="#de4d41"
+                                        backgroundColor="#f5e7ea"
+                                        onPress={() => {}}
+                                    />
+                                </View>
+                            </View>
+                        )}
+                    </Formik>
+                </TouchableWithoutFeedback>
             </View>
             <View style={styles.SignIn}>
-                <FormButton buttonTitle={"Sign Up"} />
-                <SocialButton 
-                    buttonTitle="Sign in with Google"
-                    btnType="google"
-                    color="#de4d41"
-                    backgroundColor="#f5e7ea"
-                    onPress={() => {}}
-                />
-            </View>
-            <View style={styles.SignUp}>
                 <Text style={{fontSize:16}}>Already Have an account?</Text>
                 <TouchableOpacity
                     onPress={() => navigation.navigate('Login')}
@@ -82,8 +113,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: "#fff",
     }, 
-    SignIn: {
-        margin: "8%",
+    SignUp: {
+        marginVertical: "8%",
     },
     image: {
         height: 250,
@@ -97,7 +128,7 @@ const styles = StyleSheet.create({
         margin: 10,
         fontSize: 16,
     },
-    SignUp: {
+    SignIn: {
         justifyContent: 'center',
         alignItems: 'center',
     },
