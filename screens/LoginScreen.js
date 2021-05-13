@@ -1,13 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, Keyboard, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import FormButton from '../components/FormButton';
 import FormInput from '../components/FormInput';
 import SocialButton from '../components/SocialButton';
+import { Formik } from 'formik';
+import * as yup from 'yup';
 
+const loginSchema = yup.object({
+    email: yup.string()
+        .required("Email Address is required")
+        .email("Please enter valid email"),
+    password: yup.string()
+        .matches(/\w*[a-z]\w*/,  "Password must have a small letter")
+        .matches(/\w*[A-Z]\w*/,  "Password must have a capital letter")
+        .matches(/\d/, "Password must have a number")
+        .matches(/[!@#$%^&*()\-_"=+{}; :,<.>]/, "Password must have a special character")
+        .min(8, ({ min }) => `Password must be at least ${min} characters`)
+        .required("Password is required"),
+})
 
 const LoginScreen = ({navigation}) => {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+    const [loginData, setLoginData ] = useState([])
+
+    const addLoginData = (data) => {
+        setLoginData(data)
+        console.log(data)
+    } 
     return (
         <View style={styles.container}>
             <Image 
@@ -17,37 +35,64 @@ const LoginScreen = ({navigation}) => {
                 }}
             />
             <View>
-                <FormInput
-                    labelValue={email}
-                    onChangeText={(userEmail) => setEmail(userEmail)}
-                    placeholderText={"Email"}
-                    placeholderTextColor="black"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                />
-                <FormInput
-                    labelValue={password}
-                    onChangeText={(userPassword) => setPassword(userPassword)}
-                    placeholderText={"Password"}
-                    placeholderTextColor="black"
-                    secureTextEntry={true}
-                />
-
-                <TouchableOpacity style={styles.ForgotPassword}>
-                    <Text>Forgot Password?</Text>
-                </TouchableOpacity>
-                
-            </View>
-            <View style={styles.SignIn}>
-                <FormButton buttonTitle={"Sign In"} />
-                <SocialButton 
-                    buttonTitle="Sign in with Google"
-                    btnType="google"
-                    color="#de4d41"
-                    backgroundColor="#f5e7ea"
-                    onPress={() => {}}
-                />
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                    <Formik
+                        validationSchema={loginSchema}
+                        initialValues={{
+                            email: '',
+                            password: '',
+                        }}
+                        onSubmit={(values, actions) => {
+                            addLoginData(values);
+                            actions.resetForm();
+                        }}
+                    >
+                        {(formikProps) =>(
+                            <View>
+                                <FormInput
+                                    labelValue={formikProps.values.email}
+                                    onChangeText={formikProps.handleChange('email')}
+                                    placeholderText={"Email"}
+                                    placeholderTextColor="black"
+                                    keyboardType="email-address"
+                                    autoCapitalize="none"
+                                    autoCorrect={false}
+                                    onBlur={formikProps.handleBlur('email')}
+                                />
+                                {formikProps.touched.email && formikProps.errors.email ? (
+                                    <Text style={styles.errorMsg}>{formikProps.errors.email}</Text>
+                                ) : null}
+                                <FormInput
+                                    labelValue={formikProps.values.password}
+                                    onChangeText={formikProps.handleChange('password')}
+                                    placeholderText={"Password"}
+                                    placeholderTextColor="black"
+                                    secureTextEntry={true}
+                                    onBlur={formikProps.handleBlur('password')}
+                                />
+                                {formikProps.touched.password && formikProps.errors.password ? (
+                                    <Text style={styles.errorMsg}>{formikProps.errors.password}</Text>
+                                ) : null}
+                                <TouchableOpacity style={styles.ForgotPassword}>
+                                    <Text>Forgot Password?</Text>
+                                </TouchableOpacity>
+                                <View style={styles.SignIn}>
+                                    <FormButton 
+                                        onPress={formikProps.handleSubmit}
+                                        buttonTitle={"Sign In"} 
+                                    />
+                                    <SocialButton 
+                                        buttonTitle="Sign in with Google"
+                                        btnType="google"
+                                        color="#de4d41"
+                                        backgroundColor="#f5e7ea"
+                                        onPress={() => {}}
+                                    />
+                                </View>
+                            </View>
+                        )}
+                    </Formik>
+                </TouchableWithoutFeedback>
             </View>
             <View style={styles.SignUp}>
                 <Text style={{fontSize:16}}>Don't have an account?</Text>
@@ -71,7 +116,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#fff",
     }, 
     SignIn: {
-        margin: "8%",
+        marginVertical: "8%",
     },
     image: {
         height: 250,
@@ -94,5 +139,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
         color: '#F50057'
+    },
+    errorMsg: {
+        marginLeft: 15,
+        color: 'red',
     }
 })

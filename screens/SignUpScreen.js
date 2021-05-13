@@ -42,7 +42,7 @@ const SignUpScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View>
-                <TouchableWithoutFeedback onPress={Keyboard.dismiss()}>
+                <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <Formik
                         validationSchema={signUpSchema}
                         initialValues={{ 
@@ -181,6 +181,7 @@ const styles = StyleSheet.create({
         color: '#F50057'
     },
     errorMsg: {
+        marginLeft: 15,
         color: 'red',
     }
 })
