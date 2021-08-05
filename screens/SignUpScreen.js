@@ -5,6 +5,8 @@ import FormInput from '../components/FormInput';
 import SocialButton from '../components/SocialButton';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const signUpSchema = yup.object({
     name: yup.string()
@@ -27,16 +29,25 @@ const signUpSchema = yup.object({
 })
 
 const SignUpScreen = ({navigation}) => {
-    const [ userData, setUserData ] = useState([])
+    const [ userData, setUserData ] = useState()
+    const user = useSelector(state => state.userState.currentUser);
 
     const addUserData = (userData) => {
-        setUserData(userData)
-        console.log(userData)
+        setUserData(userData);
+        console.log(userData);
     }
 
-    if(userData.name) {
-        console.log('1')
-        console.log(userData.name);
+    if(userData){
+        axios.post(
+            'http://10.0.2.2:5000/register', 
+            userData
+        )
+        .then((response) => {
+            if(response.data.success==True){
+                user = response.data.user
+            }
+        })
+        .catch((error) => console.log(error));
     }
 
     return (
@@ -45,13 +56,13 @@ const SignUpScreen = ({navigation}) => {
                 <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                     <Formik
                         validationSchema={signUpSchema}
-                        initialValues={{ 
-                            name: '', 
+                        initialValues={{
+                            name: '',
                             phoneNo: '',
                             email: '',
                             password: '',
                             confirmPassword: '',
-            
+
                         }}
                         onSubmit={(values, actions) => {
                             addUserData(values);
@@ -119,9 +130,9 @@ const SignUpScreen = ({navigation}) => {
                                 <View style={styles.SignUp}>
                                     <FormButton
                                         onPress={formikProps.handleSubmit}
-                                        buttonTitle={"Sign Up"} 
+                                        buttonTitle={"Sign Up"}
                                     />
-                                    <SocialButton 
+                                    <SocialButton
                                         buttonTitle="Sign in with Google"
                                         btnType="google"
                                         color="#de4d41"
@@ -154,7 +165,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: "#fff",
-    }, 
+    },
     SignUp: {
         marginVertical: "8%",
     },

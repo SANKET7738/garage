@@ -5,6 +5,7 @@ import FormInput from '../components/FormInput';
 import SocialButton from '../components/SocialButton';
 import { Formik } from 'formik';
 import * as yup from 'yup';
+import axios from 'axios';
 
 const loginSchema = yup.object({
     email: yup.string()
@@ -26,6 +27,16 @@ const LoginScreen = ({navigation}) => {
         setLoginData(data)
         console.log(data)
     } 
+
+    if(loginData){
+        axios.post(
+            'http://10.0.2.2:5000/login',
+            loginData 
+        )
+        .then((response) => console.log(response.data))
+        .catch((error) => console.log(error));
+    }
+
     return (
         <View style={styles.container}>
             <Image 
