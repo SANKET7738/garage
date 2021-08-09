@@ -6,6 +6,8 @@ import SocialButton from '../components/SocialButton';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/actions';
 
 const loginSchema = yup.object({
     email: yup.string()
@@ -21,6 +23,7 @@ const loginSchema = yup.object({
 })
 
 const LoginScreen = ({navigation}) => {
+    const dispatch = useDispatch()
     const [loginData, setLoginData ] = useState([])
 
     const addLoginData = (data) => {
@@ -33,7 +36,9 @@ const LoginScreen = ({navigation}) => {
             'http://10.0.2.2:5000/login',
             loginData 
         )
-        .then((response) => console.log(response.data))
+        .then((response) => {
+            dispatch(setUser(response.data.user))
+        })
         .catch((error) => console.log(error));
     }
 

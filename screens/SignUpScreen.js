@@ -7,6 +7,8 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/actions';
 
 const signUpSchema = yup.object({
     name: yup.string()
@@ -29,12 +31,11 @@ const signUpSchema = yup.object({
 })
 
 const SignUpScreen = ({navigation}) => {
+    const dispatch = useDispatch()
     const [ userData, setUserData ] = useState()
-    const user = useSelector(state => state.userState.currentUser);
 
     const addUserData = (userData) => {
         setUserData(userData);
-        console.log(userData);
     }
 
     if(userData){
@@ -43,9 +44,7 @@ const SignUpScreen = ({navigation}) => {
             userData
         )
         .then((response) => {
-            if(response.data.success==True){
-                user = response.data.user
-            }
+            dispatch(setUser(response.data.user))
         })
         .catch((error) => console.log(error));
     }
