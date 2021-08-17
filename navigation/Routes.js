@@ -2,6 +2,7 @@ import React, { useState }from 'react';
 import { Text, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthStack from './AuthStack';
+import AppStack from './AppStack';
 import { useSelector } from 'react-redux';
 
 const Routes = () => {
@@ -16,9 +17,9 @@ const Routes = () => {
     }
 
     return (
-        <View style={{ flex:1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>{user}</Text>
-        </View>
+        <NavigationContainer>
+            <AppStack/>
+        </NavigationContainer>
     )
 }
 
