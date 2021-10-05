@@ -37,6 +37,7 @@ const LoginScreen = ({navigation}) => {
             loginData 
         )
         .then((response) => {
+            console.log(response.data)
             dispatch(setUser(response.data.user))
         })
         .catch((error) => console.log(error));
