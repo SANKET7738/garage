@@ -24,8 +24,7 @@ const UserProfileScreen = ({navigation}) => {
         "registeratioNo" : "",
     });
 
-    console.log(user);
-
+   
     const toggleModal = () => {
         setModalVisible(!isModalVisible);
     }
@@ -61,8 +60,18 @@ const UserProfileScreen = ({navigation}) => {
     let addCarDetails = {}
 
     const updateCarDetails = (carDetails) => {
+        // console.log(user.uid);
         // console.log(carDetails);
         setCarDetails(carDetails);
+        carDetails.uid = user.uid;
+        axios.post(
+            'http://10.0.2.2:5000/addVehicle',
+            carDetails
+        )
+        .then((response) => {
+            console.log("here");
+            console.log(response.msg);
+        })
     }   
     
     return(

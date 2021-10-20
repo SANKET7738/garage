@@ -38,6 +38,7 @@ const Appstack = () => {
                 component={UserProfileScreen}
                 options={{
                     tabBarShowLabel: false,
+                    tabBarVisible: false,
                     tabBarIcon: ({ color, size }) => (
                         <FontAwesome name="user-circle" size={28} color="#F50057" />
                     )
