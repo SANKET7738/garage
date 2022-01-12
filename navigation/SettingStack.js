@@ -5,17 +5,17 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import SettingsScreen from '../screens/SettingsScreen';
 import ProfileScreen from '../screens/UserProfileScreen';
+import ParkingSpacesStack from './ParkingSpacesStack';
 
 const Stack = createNativeStackNavigator();
 
 const SettingStack = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator>
-                <Stack.Screen name="Settings" component={SettingsScreen} />
-                <Stack.Screen name="Profile" component={ProfileScreen} />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <Stack.Navigator>
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Parking Spaces" component={ParkingSpacesStack} />
+        </Stack.Navigator>
     )
 }
 

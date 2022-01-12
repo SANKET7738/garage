@@ -39,6 +39,7 @@ const SignUpScreen = ({navigation}) => {
     }
 
     if(userData){
+        console.log(userData)
         axios.post(
             'http://10.0.2.2:5000/register', 
             userData

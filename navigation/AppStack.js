@@ -7,6 +7,9 @@ import ParkingScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import BookedScreen from '../screens/BookedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
+import Viva from '../screens/Viva';
+
+import SettingStack from './SettingStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -46,7 +49,7 @@ const Appstack = () => {
             />
             <Tab.Screen 
                 name="Settings" 
-                component={SettingsScreen}
+                component={SettingStack}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color, size }) => (

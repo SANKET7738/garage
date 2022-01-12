@@ -40,7 +40,7 @@ const LoginScreen = ({navigation}) => {
             console.log(response.data)
             dispatch(setUser(response.data.user))
         })
-        .catch((error) => console.log(error));
+        .catch((error) => console.log(error.response.data));
     }
 
     return (

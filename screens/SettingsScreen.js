@@ -44,7 +44,9 @@ const SettingsScreen = ({navigation}) => {
                     <Ionicons name="location-sharp" size={28} color="#F50057" />
                 </View>
                 <View style={{ flex: 0.6, alignItems: 'center' }}>
-                    <Text>Parking Spaces</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Parking Spaces') }>
+                            <Text>Parking Spaces</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </View>
