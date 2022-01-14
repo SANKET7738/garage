@@ -18,6 +18,7 @@ const ParkingSpacesScreen = ({navigation}) => {
             </View>
             <View>
                 <AddressCard/>
+                <AddressCard/>
             </View>
         </SafeAreaView>
     )

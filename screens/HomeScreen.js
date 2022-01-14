@@ -22,7 +22,7 @@ const ParkingScreen = ({navigation}) => {
     useEffect(() => {
         (async () => {
             let { status } =  await Location.requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
+            if (status != 'granted') {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }

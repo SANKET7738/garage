@@ -4,9 +4,9 @@ import { Ionicons } from '@expo/vector-icons';
 
 const AddressCard = () => {
     return (
-        <View StyleSheet={Styles.cardContainer}>
+        <View style={Styles.cardContainer}>
             <View style={Styles.icon}>
-                <Ionicons name="location-sharp" size={24} color="black" />
+                <Ionicons name="location-sharp" size={30} color="#F50057" />
             </View>
             <View style={Styles.addressTextArea}>
                 <Text style={Styles.addressTitle}>Home</Text>
@@ -20,21 +20,21 @@ export default AddressCard;
 
 const Styles = StyleSheet.create({
     cardContainer: {
-     height: "200px",
-     borderWidth: 1,
-     borderColor: "black",
+     flexDirection: "row",
+     marginVertical: 1,
+     paddingVertical: 10,
+     backgroundColor: "white",
     },
     icon: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
         width: "20%",
+        justifyContent: "center",
+        alignItems: "center",
     },
     addressTextArea: {
-       marginLeft: "20%",
+      width: "70%",
     },
     addressTitle: {
-        fontSize: 20,
+        fontSize:20,
         color: "black",
         fontWeight: "bold",
         margin: 5,

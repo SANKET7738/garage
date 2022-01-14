@@ -10,7 +10,7 @@ const ParkingSpacesStack = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name = "Parking Spaces" component={ParkingSpacesScreen} options={{headerShown: false,}} />
-            <Stack.Screen name = "AddAddress" component={AddAddressScreen} options={{headerShown:false,}}/>
+            <Stack.Screen name = "AddAddress" component={AddAddressScreen} options={{headerShown:false}}/>
         </Stack.Navigator>
     )
 }

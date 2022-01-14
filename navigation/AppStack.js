@@ -36,7 +36,7 @@ const Appstack = () => {
                     )
                 }} 
             />
-            <Tab.Screen 
+            {/* <Tab.Screen 
                 name="Profile" 
                 component={UserProfileScreen}
                 options={{
@@ -46,7 +46,7 @@ const Appstack = () => {
                         <FontAwesome name="user-circle" size={28} color="#F50057" />
                     )
                 }} 
-            />
+            /> */}
             <Tab.Screen 
                 name="Settings" 
                 component={SettingStack}
