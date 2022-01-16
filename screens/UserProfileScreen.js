@@ -126,7 +126,7 @@ const UserProfileScreen = ({navigation}) => {
                         <Dropdown
                             label="Company"
                             // value={carDetails.company}
-                            data={brandList}MaterialIcons
+                            data={brandList}
                             style={Styles.dropdown}
                             
                             onChangeText={(v) => {

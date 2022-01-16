@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import {View, Text, StyleSheet} from "react-native";
+import {View, Text, StyleSheet, ActivityIndicator} from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { Dimensions } from 'react-native';
 import Geocoder from 'react-native-geocoding';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 
-const AddAddressScreen = () => {
+const AddAddressScreen = ({navigation}) => {
     const [location, setLocation ] = useState(null);
     const [address, setAddress] = useState(null);
     let mumbaiCoords = {
@@ -23,6 +24,7 @@ const AddAddressScreen = () => {
             location.coords['latitudeDelta'] = 0.002;
             location.coords['longitudeDelta'] = 0.002;
             setLocation(location);
+            getAddress(location);
         })();
     }, []);
 
@@ -36,7 +38,6 @@ const AddAddressScreen = () => {
         
         Geocoder.from(latlang).then(json => {
                 var addressComponent = json.results[0];
-                console.log(addressComponent);
                 let formattedAddress = addressComponent.formatted_address;
                 let addressHeader = addressComponent.address_components[0].long_name;
                 setAddress({
@@ -46,40 +47,51 @@ const AddAddressScreen = () => {
             })
             .catch(error => console.log(console.error()));
     }
+
+    if(location){
+        return (
+            <View style={styles.container}>
+                <MapView
+                    style={styles.map}
+                    showsUserLocation={true}
+                    initialRegion={location.coords} 
+                    provider={PROVIDER_GOOGLE}
+                >
+                    <Marker draggable
+                        coordinate={location.coords}
+                        onDragEnd={(e) => updateLocation(e.nativeEvent.coordinate)}
+                    />
+                </MapView>
+                <View style={styles.addressArea}>
+                    <View style={styles.header}>
+                        <Text style={styles.headerText}>Confirm delivery location</Text>
+                    </View>
+                    <View style={styles.address}>
+                        {address ? 
+                            <View>
+                                <Text style={styles.addressTitle}>{address.addressTitle}</Text>
+                                <Text style={styles.addressText}>{address.addressText}</Text>
+                            </View>
+                         : <ActivityIndicator/>}
+                    </View>
+                    <View style={styles.addAddressButton}>
+                        <TouchableOpacity onPress={() => navigation.navigate("Parking Space Details", {"addressText": address.addressText })}>
+                            <Text style={styles.buttonText}>Save address</Text>
+                        </TouchableOpacity>
+                    </View>
+    
+                </View>
+            </View>
+            
+        )
+    }
+
     return (
         <View style={styles.container}>
-            <MapView
-                style={styles.map}
-                showsUserLocation={true}
-                initialRegion={mumbaiCoords} 
-                provider={PROVIDER_GOOGLE}
-            >
-                <Marker draggable
-                    coordinate={mumbaiCoords}
-                    onDragEnd={(e) => updateLocation(e.nativeEvent.coordinate)}
-                />
-            </MapView>
-            <View style={styles.addressArea}>
-                <View style={styles.header}>
-                    <Text style={styles.headerText}>Confirm delivery location</Text>
-                </View>
-                <View style={styles.address}>
-                    {address ? 
-                        <View>
-                            <Text style={styles.addressTitle}>{address.addressTitle}</Text>
-                            <Text style={styles.addressText}>{address.addressText}</Text>
-                        </View>
-                     : null}
-                </View>
-                <View style={styles.addAddressButton}>
-                    <Text style={styles.buttonText}>Enter complete address</Text>
-                </View>
-
-            </View>
+            <ActivityIndicator />
         </View>
-        
     )
-}
+    }
 
 export default AddAddressScreen
 
