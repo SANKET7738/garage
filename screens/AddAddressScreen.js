@@ -5,10 +5,18 @@ import * as Location from 'expo-location';
 import { Dimensions } from 'react-native';
 import Geocoder from 'react-native-geocoding';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import { parkingSpaceUpdateCoords } from '../redux/actions';
+import { parkingSpaceUpdateAddressText } from '../redux/actions';
 
+Geocoder.init(process.env.GEOCODER_API_KEY);
+Geocoder.init('AIzaSyDS52u44MIJ9yPoWOUKvq5OLpQI0pQtKU0');
 
+console.log(process.env.GEOCODER_API_KEY)
 
 const AddAddressScreen = ({navigation}) => {
+    const dispatch = useDispatch()
+    const addressState = useSelector(state => state.addressState);
     const [location, setLocation ] = useState(null);
     const [address, setAddress] = useState(null);
     let mumbaiCoords = {
@@ -21,22 +29,47 @@ const AddAddressScreen = ({navigation}) => {
     useEffect(() => {
         (async() => {
             let location = await Location.getCurrentPositionAsync({});
+            // location object 
+            // Object {
+            //     "coords": Object {
+            //       "accuracy": 5.019000053405762,
+            //       "altitude": 5,
+            //       "altitudeAccuracy": 0.5,
+            //       "heading": 90,
+            //       "latitude": 37.4219983,
+            //       "latitudeDelta": 0.002,
+            //       "longitude": -122.084,
+            //       "longitudeDelta": 0.002,
+            //       "speed": 0,
+            //     },
+            //     "mocked": false,
+            //     "timestamp": 1643551858235,
+            //   }
+           
             location.coords['latitudeDelta'] = 0.002;
             location.coords['longitudeDelta'] = 0.002;
             setLocation(location);
-            getAddress(location);
+            dispatch(parkingSpaceUpdateCoords({
+                latitude: location.coords.latitude,
+                longitude: location.coords.longitude,
+            }))
+            getAddress(location.coords);
         })();
     }, []);
 
     const updateLocation = (location) => {
+        // location : {
+        //     "latitide": something,
+        //     "longitude": something
+        // }
         setLocation(location)
+        dispatch(parkingSpaceUpdateCoords(location))
         getAddress(location)
+        console.log(addressState);
     }
 
     const getAddress = (coords) => {
-        let latlang= `${coords.latitude},${coords.longitude}`
-        
-        Geocoder.from(latlang).then(json => {
+        Geocoder.from(coords.latitude, coords.longitude).then(json => {
                 var addressComponent = json.results[0];
                 let formattedAddress = addressComponent.formatted_address;
                 let addressHeader = addressComponent.address_components[0].long_name;
@@ -44,6 +77,7 @@ const AddAddressScreen = ({navigation}) => {
                     "addressTitle": addressHeader,
                     "addressText": formattedAddress
                 })
+                dispatch(parkingSpaceUpdateAddressText(formattedAddress))
             })
             .catch(error => console.log(console.error()));
     }
@@ -88,7 +122,7 @@ const AddAddressScreen = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <ActivityIndicator />
+            <ActivityIndicator size="large" style={{height: 50}} />
         </View>
     )
     }

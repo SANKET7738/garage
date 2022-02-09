@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import { Dropdown } from 'react-native-material-dropdown-v2';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useDispatch, useSelector } from 'react-redux';
+import { parkingSpaceUpdateOwnershipType, parkingSpaceUpdateCompleteAddress, parkingSpaceUpdateLandmark } from '../redux/actions';
+
 
 function ParkingSpaceDetailsScreen({ route, navigation}) {
-
-    const { addressText } = route.params;
+    const dispatch = useDispatch()
+    const addressState = useSelector(state => state.addressState)
+    console.log(addressState)
+    const [completeAddress, setCompleteAddress] = useState()
+    const [ landmark, setLandmark] = useState()
+    const [ownershipType,setOwnershipType] = useState()
 
     return (
         <SafeAreaView style={styles.container}>
@@ -20,17 +27,23 @@ function ParkingSpaceDetailsScreen({ route, navigation}) {
                 </View>
                 <FormInput 
                     placeholderText="Your Location"
-                    defaultValue={addressText}
+                    defaultValue={addressState.addressText}
                 />
             </View>
             <View style={styles.inputField}>
                 <FormInput 
                     placeholderText="Complete Address"
+                    onChangeText={(e) => {
+                        setCompleteAddress(e)
+                    }}
                 />
             </View>
             <View style={styles.inputField}>
                 <FormInput 
                     placeholderText="Nearby landmark (Optional)"
+                    onChangeText={(e) => {
+                        setLandmark(e)
+                    }}
                 />
             </View>
             <View style={styles.inputField}>
@@ -45,11 +58,19 @@ function ParkingSpaceDetailsScreen({ route, navigation}) {
                         }
                     ]}
                     style={styles.dropdown}
+                    onChangeText={(v) => {
+                        setOwnershipType(v)
+                    }}
                 />
             </View>
             <View style={{ position: 'absolute', bottom: 5, width: "95%"}}>
                 <FormButton 
-                    onPress={() => navigation.navigate("Parking Space Photos")}
+                    onPress={() => {
+                        dispatch(parkingSpaceUpdateLandmark(landmark))
+                        dispatch(parkingSpaceUpdateOwnershipType(ownershipType))
+                        dispatch(parkingSpaceUpdateCompleteAddress(completeAddress))
+                        navigation.navigate("Parking Space Photos")
+                    }}
                     buttonTitle={"Add Photos"}
                 />
             </View>
