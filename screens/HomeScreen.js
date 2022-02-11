@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Button, Image, StyleSheet, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Button, Image, StyleSheet, ActivityIndicator } from 'react-native';
 import { useSelector } from 'react-redux';
 import { Searchbar } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
-import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker, Callout } from 'react-native-maps';
 import { Dimensions } from 'react-native';
 import * as Location from 'expo-location';
-
+import axios from 'axios';
+import MarkerCallout from '../components/MarkerCallout';
 
 const ParkingScreen = ({navigation}) => {
     const user = useSelector(state => state.userState.currentUser);
     const [location, setLocation ] = useState(null);
     const [errorMsg, setErrorMsg ] = useState(null);
+    const [loading,setLoading] = useState(true);
+    const [listings, setListings ] = useState();
 
-    let mumbaiCoords = {
-        'latitude': 19.0185924,
-        'longitude' : 73.0943656,
-        'latitudeDelta': 0.002,
-        'longitudeDelta': 0.002,
+    const getActiveListings = () => {
+        axios.get('http://10.0.2.2:5000/getActiveListings').then(resp => {
+            let listings = resp.data.active_listings;
+            setListings(listings)
+            return listings
+        })
     }
+
     useEffect(() => {
         (async () => {
             let { status } =  await Location.requestForegroundPermissionsAsync();
@@ -31,8 +36,21 @@ const ParkingScreen = ({navigation}) => {
             location.coords['latitudeDelta'] = 0.002;
             location.coords['longitudeDelta'] = 0.002;
             setLocation(location);
+            getActiveListings()
+            setLoading(false)
         })();
     }, []);
+
+    if(loading) {
+        <View style={Styles.conatiner}>
+            <ActivityIndicator />
+        </View>
+    }
+
+    if (listings) {
+        console.log("asadsfsf")
+        console.log(listings)
+    }
     
     return(
         <View style={Styles.conatiner}>
@@ -42,13 +60,29 @@ const ParkingScreen = ({navigation}) => {
                     placeholder="Search"
                 />
             </View>
-            <MapView 
-                style={Styles.map}
-                mapPadding={{ left: 10, right: 10, bottom: 0, top: 80 }}
-                showsUserLocation={true}
-                initialRegion={location ? location.coords : mumbaiCoords}
-                provider={PROVIDER_GOOGLE}  
-            />
+            {location && 
+                <MapView 
+                    style={Styles.map}
+                    mapPadding={{ left: 10, right: 10, bottom: 0, top: 80 }}
+                    showsUserLocation={true}
+                    initialRegion={location.coords}
+                    provider={PROVIDER_GOOGLE}  
+                >
+                    {listings && listings.map((marker,index) => (
+                        <Marker
+                            key={index}
+                            coordinate={{
+                                latitude: marker.coords.latitude,
+                                longitude: marker.coords.longitude
+                            }} 
+                        >
+                            <Callout>
+                                    <MarkerCallout listingInfo={marker} />
+                            </Callout>
+                        </Marker>
+                    ))}
+                </MapView>
+            }
         </View>
     )
 }

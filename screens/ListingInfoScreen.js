@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TextInput, Touch
 import { Ionicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button } from 'react-native-elements/dist/buttons/Button';
+import axios from 'axios';
 
 function ListingInfoScreen({ route,navigation}) {
   let parkingSpaceInfo = route.params.parkingSpace;
@@ -11,6 +12,8 @@ function ListingInfoScreen({ route,navigation}) {
   const [dateAfter, setDateAfter] = useState(new Date());
   const [showBefore, setShowBefore] = useState(false);
   const [showAfter,setShowAfter] = useState(false);
+  const [ rent, setRent ] = useState(0);
+  const [ spots, setSpots ] = useState(1);
 
   const showBeforeTimepicker = () => {
     setShowBefore(true);
@@ -31,7 +34,25 @@ function ListingInfoScreen({ route,navigation}) {
     setDateAfter(currentDate);
     setShowAfter(false);
   }
-  
+
+  const setListingActive = () => {
+    let payload = {
+      "pid" : parkingSpaceInfo.pid,
+      "parking_spots": spots,
+      "rent_per_hour": rent,
+      "available_from": dateBefore,
+      "available_to": dateAfter,
+    }
+    axios.post(
+      'http://10.0.2.2:5000/markParkingSpaceActive',
+      payload
+    )
+    .then((response) => {
+      console.log(response.data)
+      navigation.navigate("Parking Listing")
+    })
+    .catch((error) => console.log(error))
+  }  
   return  (
       <View style={styles.container}>
           <ScrollView horizontal={true} style={styles.imageArea}>
@@ -100,17 +121,17 @@ function ListingInfoScreen({ route,navigation}) {
           </View>
           <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 10, alignItems: "center"}}>
             <Text style={{fontSize: 18, marginLeft: -95}}>Rent Per Hour</Text>
-            <TextInput keyboardType="number-pad" style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
+            <TextInput defaultValue={rent} onChangeText={(e) => setRent(e)}keyboardType="number-pad" style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
           </View>
           <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 10, alignItems:"center"}}>
             <Text style={{fontSize: 18, marginLeft: -45}}>No of Vehicle Spots</Text>
-            <TextInput keyboardType="number-pad"  defaultValue="1" style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
+            <TextInput onChangeText={(e) => setSpots(e)} keyboardType="number-pad"  defaultValue={spots} style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
           </View>
           <View style={{ flex: 1, justifyContent: "flex-end", bottom: 10, alignSelf:"center"}}>
             <TouchableOpacity 
               style={styles.button} 
               onPress={() => {
-                navigation.navigate("Parking Listing")
+                setListingActive()
               }}
             >
               <Text style={styles.buttonText}>Make Active</Text>
