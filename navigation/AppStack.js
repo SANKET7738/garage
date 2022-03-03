@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons'; 
 import { MaterialIcons } from '@expo/vector-icons';
 
-import ParkingScreen from '../screens/HomeScreen';
+import HomeScreen from '../screens/HomeScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import BookedScreen from '../screens/BookedScreen';
 import UserProfileScreen from '../screens/UserProfileScreen';
@@ -13,6 +13,7 @@ import ParkingListings from '../screens/ParkingListings';
 
 import SettingStack from './SettingStack';
 import ListingStack from './ListingStack';
+import HomeStack from './HomeStack';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,8 +21,8 @@ const Appstack = () => {
     return (
         <Tab.Navigator initialRouteName="Home"  screenOptions={{headerShown: false}}>
             <Tab.Screen 
-                name="Parking" 
-                component={ParkingScreen}
+                name="Home" 
+                component={HomeStack}
                 options={{
                     tabBarShowLabel: false,
                     tabBarIcon: ({ color, size }) => (

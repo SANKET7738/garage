@@ -8,6 +8,7 @@ import { Dimensions } from 'react-native';
 import * as Location from 'expo-location';
 import axios from 'axios';
 import MarkerCallout from '../components/MarkerCallout';
+import { BottomModalProvider, useBottomModal } from 'react-native-bottom-modal';
 
 const ParkingScreen = ({navigation}) => {
     const user = useSelector(state => state.userState.currentUser);
@@ -47,11 +48,6 @@ const ParkingScreen = ({navigation}) => {
         </View>
     }
 
-    if (listings) {
-        console.log("asadsfsf")
-        console.log(listings)
-    }
-    
     return(
         <View style={Styles.conatiner}>
             <View style={Styles.topBar}>
@@ -69,15 +65,27 @@ const ParkingScreen = ({navigation}) => {
                     provider={PROVIDER_GOOGLE}  
                 >
                     {listings && listings.map((marker,index) => (
-                        <Marker
+                        // <Marker
+                        //     key={index}
+                        //     coordinate={{
+                        //         latitude: marker.coords.latitude,
+                        //         longitude: marker.coords.longitude
+                        //     }} 
+                        // >
+                        //     <Callout>
+                        //             <MarkerCallout listingInfo={marker} navigation={navigation} />
+                        //     </Callout>
+                        // </Marker>
+                         <Marker
                             key={index}
                             coordinate={{
                                 latitude: marker.coords.latitude,
                                 longitude: marker.coords.longitude
                             }} 
+                            onPress={() => navigation.navigate("View Details", {"listingInfo": marker})}
                         >
                             <Callout>
-                                    <MarkerCallout listingInfo={marker} />
+                                    <MarkerCallout listingInfo={marker} navigation={navigation} />
                             </Callout>
                         </Marker>
                     ))}

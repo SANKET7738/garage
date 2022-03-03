@@ -28,7 +28,9 @@ const SettingsScreen = ({navigation}) => {
                     <FontAwesome5 name="car" size={28} color="#F50057" />
                 </View>
                 <View style={{ flex: 0.6, alignItems: 'center' }}>
-                    <Text>Vehicle Details</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('Vehicle Details')}>
+                        <Text>Vehicle Details</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
             <View style={Styles.row}>
