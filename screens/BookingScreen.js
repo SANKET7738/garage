@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, Touchable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import FormButton from '../components/FormButton';
@@ -8,12 +8,27 @@ import VehicleIconSelector from '../components/VehicleIconSelector';
 function BookingScreen(props) {
   const user = useSelector(state => state.userState.currentUser);
   const [ vehicleList , setVehicleList ] = useState();
+  const [ selectedVehicle, setSelectedVehicle ] = useState();
+
   let vehicleArray = user.vehicle_list;
   let parkingSpaceInfo = props.route.params.listingInfo;
   let parkingSpaceImages = parkingSpaceInfo.images;
 
-  let availableFrom = new Date(parkingSpaceInfo.available_from).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).slice(0,5);
-  let availableTo = new Date(parkingSpaceInfo.available_to).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }).slice(0,5);
+  console.log(parkingSpaceInfo);
+
+  function formatAMPM(date) {
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var ampm = hours >= 12 ? 'pm' : 'am';
+    hours = hours % 12;
+    hours = hours ? hours : 12; // the hour '0' should be '12'
+    minutes = minutes < 10 ? '0'+minutes : minutes;
+    var strTime = hours + ':' + minutes + ' ' + ampm;
+    return strTime;
+  }
+
+  let availableFrom = formatAMPM(new Date(parkingSpaceInfo.available_from))
+  let availableTo = formatAMPM(new Date(parkingSpaceInfo.available_to))
   
   useEffect(() => {
     setVehicleList(user.vehicle_list);
@@ -22,7 +37,9 @@ function BookingScreen(props) {
   console.log(vehicleArray);
 
   const vehicleIcons = vehicleArray.map((vehicle) => (
-      <VehicleIconSelector props={vehicle} />
+      <TouchableOpacity onPress={() => setSelectedVehicle(vehicle)}>
+        <VehicleIconSelector props={vehicle} />
+      </TouchableOpacity>
   ));
   
   return (
@@ -52,7 +69,7 @@ function BookingScreen(props) {
             </View>
           </View>
           <View style={{flexDirection: "row", justifyContent: "space-evenly", marginVertical: 20, alignItems: "center"}}>
-                <Text style={{fontSize: 20, marginLeft: -26}}>Rent Per Hour</Text>
+                <Text style={{fontSize: 20, marginLeft: -56}}>Rent Per Hour</Text>
                 <Text style={{fontSize: 19,  color: "#F50057", fontWeight: "bold"}}>{parkingSpaceInfo.rent_per_hour}</Text>
           </View>
           {/* <View style={{ flexDirection: "row"}}>
@@ -67,7 +84,7 @@ function BookingScreen(props) {
           <View style={{marginTop: 5}}>
             <FormButton buttonTitle={"Book"} 
                   onPress={() => {
-                      updateCarDetails(addCarDetails);
+                      props.navigation.navigate("Booked", {"listingInfo": parkingSpaceInfo, "selectedVehicle": selectedVehicle })
                   }} 
             />
           </View>

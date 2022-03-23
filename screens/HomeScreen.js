@@ -82,7 +82,7 @@ const ParkingScreen = ({navigation}) => {
                                 latitude: marker.coords.latitude,
                                 longitude: marker.coords.longitude
                             }} 
-                            onPress={() => navigation.navigate("View Details", {"listingInfo": marker})}
+                            onPress={() => navigation.navigate("View Details", {"listingInfo": marker, "navigation": navigation})}
                         >
                             <Callout>
                                     <MarkerCallout listingInfo={marker} navigation={navigation} />
