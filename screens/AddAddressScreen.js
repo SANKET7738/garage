@@ -12,8 +12,6 @@ import { parkingSpaceUpdateAddressText } from '../redux/actions';
 Geocoder.init(process.env.GEOCODER_API_KEY);
 Geocoder.init('AIzaSyDS52u44MIJ9yPoWOUKvq5OLpQI0pQtKU0');
 
-console.log(process.env.GEOCODER_API_KEY)
-
 const AddAddressScreen = ({navigation}) => {
     const dispatch = useDispatch()
     const addressState = useSelector(state => state.addressState);

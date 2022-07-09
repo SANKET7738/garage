@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, Touchable } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useSelector } from 'react-redux';
 import FormButton from '../components/FormButton';
 import VehicleIconSelector from '../components/VehicleIconSelector';
+import axios from 'axios';
 
 function BookingScreen(props) {
   const user = useSelector(state => state.userState.currentUser);
   const [ vehicleList , setVehicleList ] = useState();
   const [ selectedVehicle, setSelectedVehicle ] = useState();
+  const [loading,setLoading] = useState(false);
 
   let vehicleArray = user.vehicle_list;
   let parkingSpaceInfo = props.route.params.listingInfo;
   let parkingSpaceImages = parkingSpaceInfo.images;
-
-  console.log(parkingSpaceInfo);
 
   function formatAMPM(date) {
     var hours = date.getHours();
@@ -27,20 +27,39 @@ function BookingScreen(props) {
     return strTime;
   }
 
+  function bookListing(data){
+    setLoading(true)
+    axios.post(
+      'http://10.0.2.2:5000/makeBooking',
+      data
+    )
+    .then((response) => {
+      if(response.data.success){
+        setLoading(false)
+        props.navigation.navigate("Booked", {"listingInfo": parkingSpaceInfo, "selectedVehicle": selectedVehicle })
+      }
+    })
+    .catch((error) => console.log(error.response.data))
+  }
+
   let availableFrom = formatAMPM(new Date(parkingSpaceInfo.available_from))
   let availableTo = formatAMPM(new Date(parkingSpaceInfo.available_to))
   
   useEffect(() => {
     setVehicleList(user.vehicle_list);
   }, []);
-
-  console.log(vehicleArray);
-
+    
   const vehicleIcons = vehicleArray.map((vehicle) => (
       <TouchableOpacity onPress={() => setSelectedVehicle(vehicle)}>
         <VehicleIconSelector props={vehicle} />
       </TouchableOpacity>
   ));
+
+  if(loading) {
+    <View style={styles.conatiner}>
+        <ActivityIndicator />
+    </View>
+}
   
   return (
     <View style={styles.container}>
@@ -72,9 +91,7 @@ function BookingScreen(props) {
                 <Text style={{fontSize: 20, marginLeft: -56}}>Rent Per Hour</Text>
                 <Text style={{fontSize: 19,  color: "#F50057", fontWeight: "bold"}}>{parkingSpaceInfo.rent_per_hour}</Text>
           </View>
-          {/* <View style={{ flexDirection: "row"}}>
-                {vehicleIcons}
-          </View> */}
+          
           <View>
             <Text style={{fontSize: 18, fontWeight: "bold", marginLeft: 20, marginVertical: 5}}>Select vehicle</Text>
             <ScrollView horizontal={true}>
@@ -83,8 +100,14 @@ function BookingScreen(props) {
           </View>
           <View style={{marginTop: 5}}>
             <FormButton buttonTitle={"Book"} 
+                  disabled={selectedVehicle ? false : true}
                   onPress={() => {
-                      props.navigation.navigate("Booked", {"listingInfo": parkingSpaceInfo, "selectedVehicle": selectedVehicle })
+                      bookListing({
+                        "uid": user.uid,
+                        "listingInfo": parkingSpaceInfo,
+                        "selectedVehicle": selectedVehicle,
+                      })
+                      // props.navigation.navigate("Booked", {"listingInfo": parkingSpaceInfo, "selectedVehicle": selectedVehicle })
                   }} 
             />
           </View>

@@ -24,21 +24,25 @@ function ListingInfoScreen({ route,navigation}) {
   }
 
   const onChangeBefore = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDateBefore(currentDate);
-    setShowBefore(false);
+    if (typeof selectedDate != "undefined"){
+      const currentDate = selectedDate;
+      setDateBefore(currentDate);
+      setShowBefore(false);
+    }
   }
 
   const onChangeAfter = (event, selectedDate) => {
-    const currentDate = selectedDate;
-    setDateAfter(currentDate);
-    setShowAfter(false);
+    if (typeof selectedDate != "undefined") {
+        const currentDate = selectedDate;
+        setDateAfter(currentDate);
+        setShowAfter(false);
+    }
   }
 
   const setListingActive = () => {
     let payload = {
       "pid" : parkingSpaceInfo.pid,
-      "parking_spots": spots,
+      "parking_spots": 1,
       "rent_per_hour": rent,
       "available_from": dateBefore,
       "available_to": dateAfter,
@@ -79,21 +83,21 @@ function ListingInfoScreen({ route,navigation}) {
             <View style={{flexDirection: "row"}}>
               <View style={styles.clock}> 
                   <TouchableOpacity style={{flexDirection: "row"}} onPress={showBeforeTimepicker}>
-                    <View style={{backgroundColor: "#F50057", padding: 4, margin: 2}}>
-                      <Text style={{fontSize: 19, color: "white"}}>{dateBefore.getHours()}</Text>
+                    <View style={styles.clockDigit}>
+                      <Text style={styles.timeText}>{dateBefore.getHours()}</Text>
                     </View>
-                    <View style={{backgroundColor: "#F50057", padding: 4, margin: 2}}>
-                      <Text style={{fontSize: 19, color: "white"}}>{dateBefore.getMinutes()}</Text>
+                    <View style={styles.clockDigit}>
+                      <Text style={styles.timeText}>{dateBefore.getMinutes()}</Text>
                     </View>
                   </TouchableOpacity>
               </View>
               <View style={styles.clock}> 
                   <TouchableOpacity style={{flexDirection: "row"}} onPress={showAfterTimepicker}>
-                    <View style={{backgroundColor: "#F50057", padding: 4, margin: 2}}>
-                      <Text style={{fontSize: 19, color: "white"}}>{dateAfter.getHours()}</Text>
+                    <View style={styles.clockDigit}>
+                      <Text style={styles.timeText}>{dateAfter.getHours()}</Text>
                     </View>
-                    <View style={{backgroundColor: "#F50057", padding: 4, margin: 2}}>
-                      <Text style={{fontSize: 19, color: "white"}}>{dateAfter.getMinutes()}</Text>
+                    <View style={styles.clockDigit}>
+                      <Text style={styles.timeText}>{dateAfter.getMinutes()}</Text>
                     </View>
                   </TouchableOpacity>
               </View>
@@ -119,15 +123,16 @@ function ListingInfoScreen({ route,navigation}) {
               />
             )}
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 10, alignItems: "center"}}>
-            <Text style={{fontSize: 18, marginLeft: -95}}>Rent Per Hour</Text>
-            <TextInput defaultValue={rent} onChangeText={(e) => setRent(e)}keyboardType="number-pad" style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
+          <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 20, alignItems: "center"}}>
+            <Text style={{fontSize: 20, marginLeft: -95}}>Rent Per Hour</Text>
+            <TextInput defaultValue={rent} onChangeText={(e) => setRent(e)}keyboardType="number-pad" style={{ width: 50, marginHorizontal: 20, backgroundColor:"#E5E5E5", width: 50, height: 30, alignItems: "center", "justifyContent": "center", color: "#F50057", paddingLeft: 12, fontSize: 18}}/>
           </View>
-          <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 10, alignItems:"center"}}>
+          {/* TODO: feature to mention available no of vehicle spots */}
+          {/* <View style={{ flexDirection: "row", justifyContent: "center", marginVertical: 10, alignItems:"center"}}>
             <Text style={{fontSize: 18, marginLeft: -45}}>No of Vehicle Spots</Text>
             <TextInput onChangeText={(e) => setSpots(e)} keyboardType="number-pad"  defaultValue={spots} style={{ width: 50, marginHorizontal: 20, borderBottomColor: "#F50057", borderBottomWidth: 1}}/>
-          </View>
-          <View style={{ flex: 1, justifyContent: "flex-end", bottom: 10, alignSelf:"center"}}>
+          </View> */}
+          <View style={{ flex: 1, alignSelf:"center", marginTop: 80}}>
             <TouchableOpacity 
               style={styles.button} 
               onPress={() => {
@@ -195,4 +200,18 @@ buttonText :{
     fontSize: 20,
     fontWeight: "bold",
 },
+clockDigit: {
+  backgroundColor: "#E5E5E5", 
+  padding: 4, 
+  margin: 2, 
+  width: 36, 
+  alignItems: "center", 
+  justifyContent: "center"
+},
+timeText: {
+  fontSize: 22,
+  color: "#F50057",
+  fontWeight: "600",
+}
+
 })

@@ -18,8 +18,11 @@ const BookedScreen = (params) => {
     if (params.route.params !== undefined) {
 
         const user = useSelector(state => state.userState.currentUser);
+        
         let listingInfo = params.route.params.listingInfo;
+        
         let selectedVehicle = params.route.params.selectedVehicle;
+        
     
         function formatAMPM(date) {
             var hours = date.getHours();
