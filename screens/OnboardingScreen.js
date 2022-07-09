@@ -21,7 +21,7 @@ const OnboardingScreen = ({navigation}) => {
                 {
                 backgroundColor: '#fff',
                 image: <Image style={styles.image} source={{ uri: "https://i.imgur.com/NpNyk4H.png" }} />,
-                title: 'Garage',
+                title: 'ParkIt',
                 subtitle: undefined,
                 titleStyles: {
                     fontSize: 64,

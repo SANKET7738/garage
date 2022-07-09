@@ -27,20 +27,29 @@ const ParkingScreen = ({navigation}) => {
 
     useEffect(() => {
         (async () => {
+            console.log("1")
             let { status } =  await Location.requestForegroundPermissionsAsync();
             if (status != 'granted') {
                 setErrorMsg('Permission to access location was denied');
+                console.log("2")
                 return;
             }
 
             let location = await Location.getCurrentPositionAsync({});
+            console.log("dsdsdsdadasad");
+            console.log(location);
             location.coords['latitudeDelta'] = 0.002;
             location.coords['longitudeDelta'] = 0.002;
             setLocation(location);
+            console.log("here");
+            console.log(location);
             getActiveListings()
             setLoading(false)
         })();
     }, []);
+
+
+    console.log(location);
 
     if(loading) {
         <View style={Styles.conatiner}>
@@ -56,6 +65,15 @@ const ParkingScreen = ({navigation}) => {
                     placeholder="Search"
                 />
             </View>
+            {/* <MapView
+                style={Styles.map}
+                initialRegion={{
+                latitude: 37.78825,
+                longitude: -122.4324,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+                }}
+            /> */}
             {location && 
                 <MapView 
                     style={Styles.map}
